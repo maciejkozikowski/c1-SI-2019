@@ -83,7 +83,8 @@ namespace DaneZPlikuConsole
 
 
             Console.WriteLine(wczytaneDane.Count() + " " + (wczytaneDane[0].Count() - 1));
-
+            List<string> symbole = new List<string>();
+            bool flag = false;
 
 
             for (int i = 0; i < wczytaneDane.Count(); i++)
@@ -91,7 +92,23 @@ namespace DaneZPlikuConsole
                 string[] tablica = new string[wczytaneDane.Count()];
                 tablica[i] = wczytaneDane[i][wczytaneDane[i].Count() - 1];
                 // Console.Write(wczytaneDane[i][wczytaneDane[0].Count() - 1]);
-                Console.Write("\nSymbole decyzyjne to: " + tablica[i]);
+                //Console.Write("\nSymbole decyzyjne to: " + tablica[i]);
+                foreach(string znak in symbole)
+                {
+                    if (znak == tablica[i])
+                    {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (flag == false)
+                {
+                    symbole.Add(tablica[i]);
+                }
+            }
+            foreach (string znak in symbole)
+            {
+                Console.Write("\nSymbole decyzyjne to: " + znak);
             }
             
             #endregion
