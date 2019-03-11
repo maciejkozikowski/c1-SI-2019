@@ -11,3 +11,9 @@ C:\Users\grzes\Desktop\Godziuk_Grzegorz\starter-Csharp\DaneZPlikuConsole\DaneZPl
 C:\Users\grzes\Desktop\Godziuk_Grzegorz\starter-Csharp\DaneZPlikuConsole\DaneZPlikuConsole\obj\Debug\DaneZPlikuConsole.csproj.CoreCompileInputs.cache
 C:\Users\grzes\Desktop\Godziuk_Grzegorz\starter-Csharp\DaneZPlikuConsole\DaneZPlikuConsole\obj\Debug\DaneZPlikuConsole.exe
 C:\Users\grzes\Desktop\Godziuk_Grzegorz\starter-Csharp\DaneZPlikuConsole\DaneZPlikuConsole\obj\Debug\DaneZPlikuConsole.pdb
+D:\studia\SI\rozwiązania\c1-SI-2019\c1-SI-2019\starter-Csharp\DaneZPlikuConsole\DaneZPlikuConsole\bin\Debug\DaneZPlikuConsole.exe.config
+D:\studia\SI\rozwiązania\c1-SI-2019\c1-SI-2019\starter-Csharp\DaneZPlikuConsole\DaneZPlikuConsole\bin\Debug\DaneZPlikuConsole.exe
+D:\studia\SI\rozwiązania\c1-SI-2019\c1-SI-2019\starter-Csharp\DaneZPlikuConsole\DaneZPlikuConsole\bin\Debug\DaneZPlikuConsole.pdb
+D:\studia\SI\rozwiązania\c1-SI-2019\c1-SI-2019\starter-Csharp\DaneZPlikuConsole\DaneZPlikuConsole\obj\Debug\DaneZPlikuConsole.csprojResolveAssemblyReference.cache
+D:\studia\SI\rozwiązania\c1-SI-2019\c1-SI-2019\starter-Csharp\DaneZPlikuConsole\DaneZPlikuConsole\obj\Debug\DaneZPlikuConsole.exe
+D:\studia\SI\rozwiązania\c1-SI-2019\c1-SI-2019\starter-Csharp\DaneZPlikuConsole\DaneZPlikuConsole\obj\Debug\DaneZPlikuConsole.pdb
