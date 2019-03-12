@@ -11,15 +11,14 @@ namespace DaneZPlikuConsole
         static string TablicaDoString<T>(T[][] tab)
         {
             string wynik = "";
-            for (int i = 0; i < tab.Length; i++)
+            for (int i = 0; i < tab.Length; i++)//wiersze
             {
-                for (int j = 0; j < tab[i].Length; j++)
+                for (int j = 0; j < tab[i].Length; j++)//kolumny
                 {
                     wynik += tab[i][j].ToString() + " ";
                 }
                 wynik = wynik.Trim() + Environment.NewLine;
             }
-
             return wynik;
         }
 
@@ -38,7 +37,6 @@ namespace DaneZPlikuConsole
             int wynik;
             if (!int.TryParse(liczba.Trim(), out wynik))
                 throw new Exception("Nie udało się skonwertować liczby do int");
-
             return wynik;
         }
 
@@ -64,8 +62,8 @@ namespace DaneZPlikuConsole
 
         static void Main(string[] args)
         {
-            string nazwaPlikuZDanymi = @"F:\Moje Programy\Sztuczna Ćw1\Ćw1\Ćw1\dane\heartdisease.txt";
-            string nazwaPlikuZTypamiAtrybutow = @"F:\Moje Programy\Sztuczna Ćw1\Ćw1\Ćw1\dane\heartdisease-type.txt";
+            string nazwaPlikuZDanymi = @"diabetes.txt";
+            string nazwaPlikuZTypamiAtrybutow = @"diabetes-type.txt";
 
             string[][] wczytaneDane = StringToTablica(nazwaPlikuZDanymi);
             string[][] atrType = StringToTablica(nazwaPlikuZTypamiAtrybutow);
@@ -81,116 +79,128 @@ namespace DaneZPlikuConsole
             Console.Write(wynikAtrType);
 
             /****************** Miejsce na rozwiązanie *********************************/
-            int rozmiar = wczytaneDane[0].Count() - 1;                                          //rozmiar systemu (ile atrybotow)
-            int wlkSys = wczytaneDane.Count();                                                  //wielkosc systemu calego (ile obiektow)
-            List<string> symbole = new List<string>();                                          //symbole na msc w systemie
-            List<double> max = new List<double>();                                              //max wartosci (tylko liczby) 
-            List<double> min = new List<double>();                                              //min wartosci (tylko liczby)
-            List<List<double>> atrDouble = new List<List<double>>();                            //atrybuty liczbowe
-            List<int> ktore_to_numeryczne = new List<int>();                                    //lista przechowujaca wiadomosci ktory atrybut byl liczba
-            List<List<string>> rozne_znaki = new List<List<String>>();
-            
-            //----------------------------------------------------------------------------
-            Console.WriteLine("\nKolejne symbole:");
-            for (int indZnaku = 0; indZnaku < rozmiar; indZnaku++)
+            #region wypisujemy istniejące w systemie symbole klas decyzyjnych
+            /* wypisuje wszystkie klasy decyzyjne
+            for (int i = 0; i < wczytaneDane.Count(); i++)
             {
-                symbole.Add(atrType[indZnaku][1]);
-                Console.Write(symbole[indZnaku]);
+                string[] tablica = new string[wczytaneDane.Count()];
+                tablica[i] = wczytaneDane[i][wczytaneDane[i].Count() - 1];
+                Console.Write("\nSymbole decyzyjne to: " + tablica[i]);
             }
-            //----------------------------------------------------------------------------
+            */
+            List<string> symbole = new List<string>();
+            bool flag = false;
 
-            int help = 0;
-            for (int i = 0; i < rozmiar; i++) //rozmiar = 13
-
+            for (int i = 0; i < wczytaneDane.Count(); i++)
             {
-                if (symbole[i] == "n")
+                string[] tablica = new string[wczytaneDane.Count()];
+                tablica[i] = wczytaneDane[i][wczytaneDane[i].Count() - 1];
+                foreach (string znak in symbole)
                 {
-                    atrDouble.Add(new List<Double>());
-                    ktore_to_numeryczne.Add(i+1);
-                    for (int j = 0; j < wlkSys; j++)
+                    if (znak == tablica[i])
                     {
-                        atrDouble[help].Add(StringToDouble(wczytaneDane[j][i]));
+                        flag = true;
+                        break;
                     }
-                    help++;
+                }
+                if (flag == false)
+                {
+                    symbole.Add(tablica[i]);
                 }
             }
-            //----------------------------------------------------------------------------
-
-            /*
-            d) dla kazdego atrybutu wypisujemy liczbe róznych dostepnych wartosci 
-            e) dla kazdego atrybutu wypisujemy liste wszystkich róznych dostepnych wartosci
-            */
-            for (int j = 0; j < rozmiar; j++)
+            foreach (string znak in symbole)
             {
-                rozne_znaki.Add(new List<string>());
+                Console.Write("\nSymbole decyzyjne to: " + znak);
             }
-            
-            int c = 1;
-            for (int j = 0; j < rozmiar; j++) //lewo prawo (1)
+            #endregion
+            #region wielkości klas decyzyjnych (liczby obiektów w klasach)
+            int prawda = 0;
+            int falsz = 0;
+                for (int i = 0; i < wczytaneDane.Count(); i++) //zlicza wystapienia 0 i 1
+                    {
+                    if (wczytaneDane[i][wczytaneDane[0].Count() - 1] == "1") prawda++;
+                    else falsz++;
+                }
+                Console.WriteLine("\nWielkosc klasy 0 jest rowna: "+falsz+" a klasy 1 jest rowna: "+prawda);
+            #endregion
+            #region minimalne i maksymalne wartości poszczególnych atrybutów(dotyczy atrybutów numerycznych) 
+            Console.WriteLine("Ktoremu atrybutowi wyznaczyc min i max? Podaj cyfre 0-7");
+            int numerAtrybutu = int.Parse(Console.ReadLine());
+            List<string> wartosciAtrybutu = new List<string>();
+            double max = -999999;
+            double min = 999999;
+            double sumaAtrybutow = 0;
+            double sredniaArytmetyczna = 0;
+            if (numerAtrybutu >= 0 && numerAtrybutu < 8)
             {
-                help = 0;
-                for (int i = 0; i < wlkSys; i++) //góra dół (1)
+                for (int i = 0; i < atrType.Length; i++)//wiersze
                 {
-                    c = 1;
-                    if (i==0)
+                    for (int j = 0; j < atrType[i].Length; j++)//kolumny
                     {
-                        rozne_znaki[j].Add(wczytaneDane[i][j]);
-                        help++;
-                    }
-                    for (int k = 0; k < help; k++)
-                    {
-                        //Console.WriteLine(rozne_znaki[j][i] + "-" + wczytaneDane[i][j]);
-                        if (rozne_znaki[j][k] == wczytaneDane[i][j])
+                        if (i == numerAtrybutu) // zatrzymuje się na odpowiednim miejscu kolumny
                         {
-                            c = 0;
+                            for (int k = 0; k < wczytaneDane.Length; k++)// zczytuje dane i dodaje do listy
+                            {
+                                wartosciAtrybutu.Add(wczytaneDane[k][numerAtrybutu]);
+                                    if (atrType[i][1] == "n") //czy jest numeryczny atrybut
+                                    {
+                                        if (StringToDouble(wczytaneDane[k][numerAtrybutu]) < min) min = StringToDouble(wczytaneDane[k][numerAtrybutu]);
+                                        if (StringToDouble(wczytaneDane[k][numerAtrybutu]) > max) max = StringToDouble(wczytaneDane[k][numerAtrybutu]);
+                                    sumaAtrybutow = sumaAtrybutow + StringToDouble(wczytaneDane[k][numerAtrybutu]);
+                                    }
+                            }
                             break;
                         }
-                        
                     }
-                    if (c == 1)
-                    {
-                        rozne_znaki[j].Add(wczytaneDane[i][j]);
-                        help++;
-                    }
-
                 }
             }
-
-            //----------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-            //------------------Wypisanie danych-----------------------------
-
-            for (int i = 0; i < atrDouble.Count(); i++)
+            if (atrType[numerAtrybutu][1] == "n")
             {
-                min.Add(atrDouble[i].Min());
-                max.Add(atrDouble[i].Max());
-                Console.WriteLine("\nAtrybut nr:" + ktore_to_numeryczne[i]);
-                Console.WriteLine("Min:" + min[i]);
-                Console.WriteLine("Max:" + max[i]);
+                Console.WriteLine("Dla atrybutu :" + numerAtrybutu + " min=" + min + " max=" + max);
             }
-            
-
-            Console.WriteLine("\nRozmiar systemu:" + rozmiar);
-            Console.WriteLine("\nWielkosc systemu:" + wlkSys);
-            for (int i = 0; i < rozne_znaki.Count() ; i++)
+            #endregion
+            //Nie działa zliczanie
+            #region dla każdego atrybutu wypisujemy liczbę różnych dostępnych wartości
+            List<int> iloscPowtorzen = new List<int>();
+            for (int i = 0; i < wczytaneDane.Length; i++)
             {
-                for (int j = 0; j < rozne_znaki[i].Count() ; j++)
+
+            }
+
+
+            #endregion
+            #region dla każdego atrybutu wypisujemy listę wszystkich różnych dostępnych wartości
+            Console.WriteLine("Lista roznych wartosci danego atrybutu");
+            List<string> rozneWartosciAtrybutu = new List<string>();
+
+            for (int i = 0; i < wczytaneDane.Length; i++)// zczytuje dane i dodaje do listy
+            {
+                rozneWartosciAtrybutu.Add(wczytaneDane[i][numerAtrybutu]);
+                
+            }
+            foreach (string x in rozneWartosciAtrybutu.Distinct())
+            {
+                Console.WriteLine(x);
+            }
+            #endregion
+            #region odchylenie standardowe dla poszczególnych atrybutów w całym systemie i w klasach decyzyjnych(dotyczy atrybutów numerycznych)
+            double wariancja = 0;
+            double odchylenieStandardowe;
+            for(int i = 0; i < wczytaneDane.Length; i++)
+            {
+                if (atrType[numerAtrybutu][1] == "n")
                 {
-                    Console.WriteLine(rozne_znaki[i][j]);
+                    wariancja = wariancja + (StringToDouble(wczytaneDane[i][numerAtrybutu]) - sredniaArytmetyczna) * (StringToDouble(wczytaneDane[i][numerAtrybutu]) - sredniaArytmetyczna);
                 }
-                Console.WriteLine("Ilosc roznych znakow: " + rozne_znaki[i].Count());
             }
-            //---------------------------------------------------------------
+            odchylenieStandardowe = Math.Sqrt(wariancja / wczytaneDane.Length);
+            Console.WriteLine("Odchylenie standardowe= " + odchylenieStandardowe);
+
+            #endregion
+
+
+
+
 
             /****************** Koniec miejsca na rozwiązanie ********************************/
             Console.ReadKey();
