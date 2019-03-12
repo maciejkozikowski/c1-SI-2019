@@ -80,7 +80,14 @@ namespace DaneZPlikuConsole
 
             /****************** Miejsce na rozwiązanie *********************************/
             #region wypisujemy istniejące w systemie symbole klas decyzyjnych
-            Console.WriteLine(wczytaneDane.Count() + " " + (wczytaneDane[0].Count() - 1));
+            /* wypisuje wszystkie klasy decyzyjne
+            for (int i = 0; i < wczytaneDane.Count(); i++)
+            {
+                string[] tablica = new string[wczytaneDane.Count()];
+                tablica[i] = wczytaneDane[i][wczytaneDane[i].Count() - 1];
+                Console.Write("\nSymbole decyzyjne to: " + tablica[i]);
+            }
+            */
             List<string> symbole = new List<string>();
             bool flag = false;
 
@@ -88,9 +95,7 @@ namespace DaneZPlikuConsole
             {
                 string[] tablica = new string[wczytaneDane.Count()];
                 tablica[i] = wczytaneDane[i][wczytaneDane[i].Count() - 1];
-                // Console.Write(wczytaneDane[i][wczytaneDane[0].Count() - 1]);
-                //Console.Write("\nSymbole decyzyjne to: " + tablica[i]);
-                foreach(string znak in symbole)
+                foreach (string znak in symbole)
                 {
                     if (znak == tablica[i])
                     {
@@ -106,9 +111,8 @@ namespace DaneZPlikuConsole
             foreach (string znak in symbole)
             {
                 Console.Write("\nSymbole decyzyjne to: " + znak);
-            }            
+            }
             #endregion
-
             #region wielkości klas decyzyjnych (liczby obiektów w klasach)
             int prawda = 0;
             int falsz = 0;
@@ -119,85 +123,153 @@ namespace DaneZPlikuConsole
                 }
                 Console.WriteLine("\nWielkosc klasy 0 jest rowna: "+falsz+" a klasy 1 jest rowna: "+prawda);
             #endregion
-
             #region minimalne i maksymalne wartości poszczególnych atrybutów(dotyczy atrybutów numerycznych) 
-                      
-                int[] tabInt=new int[wczytaneDane.Count() - 1];
-                double[] tabDouble = new double[wczytaneDane.Count() - 1];
-            int licznik = wczytaneDane[0].Count() - 2;//ilość kolumn do przeszukania wszystkich atrybutów bez ostatniego decyzyjnego
-            while (licznik > 0)//przechodzi po wszystkich kolumnach
+            Console.WriteLine("Ktoremu atrybutowi wyznaczyc min i max? Podaj cyfre 0-7");
+            int numerAtrybutu = int.Parse(Console.ReadLine());
+            List<string> wartosciAtrybutu = new List<string>();
+            double max = -999999;
+            double min = 999999;
+            double sumaAtrybutow = 0;
+            double sredniaArytmetyczna = 0;
+            if (numerAtrybutu >= 0 && numerAtrybutu < 8)
             {
+                for (int i = 0; i < atrType.Length; i++)//wiersze
+                {
+                    for (int j = 0; j < atrType[i].Length; j++)//kolumny
+                    {
+                        if (i == numerAtrybutu) // zatrzymuje się na odpowiednim miejscu kolumny
+                        {
+                            for (int k = 0; k < wczytaneDane.Length; k++)// zczytuje dane i dodaje do listy
+                            {
+                                wartosciAtrybutu.Add(wczytaneDane[k][numerAtrybutu]);
+                                    if (atrType[i][1] == "n") //czy jest numeryczny atrybut
+                                    {
+                                        if (StringToDouble(wczytaneDane[k][numerAtrybutu]) < min) min = StringToDouble(wczytaneDane[k][numerAtrybutu]);
+                                        if (StringToDouble(wczytaneDane[k][numerAtrybutu]) > max) max = StringToDouble(wczytaneDane[k][numerAtrybutu]);
+                                    sumaAtrybutow = sumaAtrybutow + StringToDouble(wczytaneDane[k][numerAtrybutu]);
+                                    }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            if (atrType[numerAtrybutu][1] == "n")
+            {
+                Console.WriteLine("Dla atrybutu :" + numerAtrybutu + " min=" + min + " max=" + max);
+            }
+            #endregion
+            #region dla każdego atrybutu wypisujemy listę wszystkich różnych dostępnych wartości oraz ilosc
+            Console.WriteLine("Lista roznych wartosci danego atrybutu oraz ilosc wystapien");
+            string[] wszystkieWartosciAtrybutu = new string[wczytaneDane.Length];
+            string[] wartosciAtrybutuDistinc = new string[1000];
+            int[] zlicz = new int[1000];
+
+            for (int i = 0; i < wczytaneDane.Length; i++)// zczytuje dane i dodaje do listy
+            {
+               wszystkieWartosciAtrybutu[i]=wczytaneDane[i][numerAtrybutu];
                 
-                for (int i = 0; i < wczytaneDane.Count() - 1; i++)//zamienia stringi na liczby INT do tablicy
+            }
+            int licznik = 0;
+            foreach (string x in wszystkieWartosciAtrybutu.Distinct())//wartosci bez duplikatow
+            {
+                wartosciAtrybutuDistinc[licznik] = x;
+                licznik++;
+            }
+            for (int i = 0; i < wczytaneDane.Length; i++)
+            {
+
+                for (int j = 0; j < wartosciAtrybutuDistinc.Length; j++)
                 {
-                    int liczba = StringToInt(wczytaneDane[i][0]);
-                    //int liczba1 = StringToInt(wczytaneDane[i][1]);
-                    tabInt[i] = liczba;
-                }
-                int tmp;
-                for (int i = 0; i < tabInt.Length - 1; i++)//sortuje tablice
-                {
-                    for (int j = 0; j < tabInt.Length - 1; j++)
+                    if (wartosciAtrybutuDistinc[j] == wczytaneDane[i][numerAtrybutu])
                     {
-                        if (tabInt[j] > tabInt[j + 1])
-                        {
-                            tmp = tabInt[j];
-                            tabInt[j] = tabInt[j + 1];
-                            tabInt[j + 1] = tmp;
-                        }
+                        zlicz[j]++;
                     }
                 }
-                Console.WriteLine("Min int to: " + tabInt[0] + " Max int to: " + tabInt[tabInt.Length - 1]);
-
-
-                for (int i = 0; i < wczytaneDane.Count() - 1; i++)//zamienia stringi na liczby DOUBLE do tablicy
+            }
+            for (int i = 0; i < wartosciAtrybutuDistinc.Length; i++)
+            {
+                if (zlicz[i] != 0)
                 {
-                    double liczba = StringToDouble(wczytaneDane[i][5]);
-                    //int liczba1 = StringToInt(wczytaneDane[i][1]);
-                    tabDouble[i] = liczba;
-                }
-                double tmp1;
-                for (int i = 0; i < tabDouble.Length - 1; i++)//sortuje tablice
-                {
-                    for (int j = 0; j < tabDouble.Length - 1; j++)
-                    {
-                        if (tabDouble[j] > tabDouble[j + 1])
-                        {
-                            tmp1 = tabDouble[j];
-                            tabDouble[j] = tabDouble[j + 1];
-                            tabDouble[j + 1] = tmp1;
-                        }
-                    }
-                }
-                Console.WriteLine("Min double to: " + tabDouble[0] + " Max double to: " + tabDouble[tabInt.Length - 1]);
-                licznik--;
+                    Console.WriteLine("Wartosc atrybutu " + wartosciAtrybutuDistinc[i] + " wystepuje: " + zlicz[i]);
 
+                }
             }
 
 
-
-
-
             #endregion
-
-            #region dla każdego atrybutu wypisujemy liczbę różnych dostępnych wartości
-
-
-
-            #endregion
-            #region dla każdego atrybutu wypisujemy listę wszystkich różnych dostępnych wartości
-
-
-
-            #endregion
-
             #region odchylenie standardowe dla poszczególnych atrybutów w całym systemie i w klasach decyzyjnych(dotyczy atrybutów numerycznych)
-
-
+            double wariancja = 0;
+            double odchylenieStandardowe;
+            for(int i = 0; i < wczytaneDane.Length; i++)
+            {
+                if (atrType[numerAtrybutu][1] == "n")
+                {
+                    wariancja = wariancja + (StringToDouble(wczytaneDane[i][numerAtrybutu]) - sredniaArytmetyczna) * (StringToDouble(wczytaneDane[i][numerAtrybutu]) - sredniaArytmetyczna);
+                }
+            }
+            odchylenieStandardowe = Math.Sqrt(wariancja / wczytaneDane.Length);
+            Console.WriteLine("Odchylenie standardowe= " + odchylenieStandardowe);
 
             #endregion
 
+            #region Wygeneruj 10 procent wartości nieznanych, wpisując na miejsce danych znak zapytania i napraw metodą szukania najczęściej wystepującej wartości, lub wartością średnią(dla atrybutów numerycznych)
 
+            Random rand = new Random();
+            
+            Console.Write("{0}\n", rand.Next(100));
+            for(int i = 0; i < wczytaneDane.Length; i++)
+            {
+                for (int j = 0; j < wczytaneDane[i].Length; j++)
+                {
+                    if (rand.Next(10) == 0)
+                    {
+                        wczytaneDane[i][j] = "?";
+                    }
+                }
+            }
+
+            Console.WriteLine("\nDane systemu po wygenerowaniu 10 procent wartości nieznanych");
+            Console.ReadKey();
+            wynik = TablicaDoString(wczytaneDane);
+            Console.Write(wynik);
+
+            //naprawianie
+            double[] srednia = new double[wczytaneDane.Length];
+            double temp = 0;
+            for (int i = 0; i < srednia.Length; i++)
+            {
+                srednia[i] = 0;
+            }
+            for (int i = 0; i < wczytaneDane.Length; i++)
+            {
+                for (int j = 0; j < wczytaneDane[i].Length; j++)
+                {
+                    if (wczytaneDane[i][j] != "?")
+                    {
+                        double.TryParse(wczytaneDane[i][j], out temp);
+                        srednia[j] += temp;
+                    }
+
+                }
+                srednia[i] = srednia[i] / srednia.Length;
+            }
+
+            for (int i = 0; i < wczytaneDane.Length; i++)
+            {
+                for (int j = 0; j < wczytaneDane[i].Length; j++)
+                {
+                    if (wczytaneDane[i][j] == "?")
+                    {
+                        wczytaneDane[i][j] = srednia[j].ToString();
+                    }
+                }
+            }
+            Console.WriteLine("\nDane systemu po naprawieniu");
+            Console.ReadKey();
+            wynik = TablicaDoString(wczytaneDane);
+            Console.Write(wynik);
+            #endregion
 
 
 
