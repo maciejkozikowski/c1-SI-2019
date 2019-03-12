@@ -159,29 +159,44 @@ namespace DaneZPlikuConsole
                 Console.WriteLine("Dla atrybutu :" + numerAtrybutu + " min=" + min + " max=" + max);
             }
             #endregion
-            //Nie działa zliczanie
-            #region dla każdego atrybutu wypisujemy liczbę różnych dostępnych wartości
-            List<int> iloscPowtorzen = new List<int>();
-            for (int i = 0; i < wczytaneDane.Length; i++)
-            {
-
-            }
-
-
-            #endregion
-            #region dla każdego atrybutu wypisujemy listę wszystkich różnych dostępnych wartości
-            Console.WriteLine("Lista roznych wartosci danego atrybutu");
-            List<string> rozneWartosciAtrybutu = new List<string>();
+            #region dla każdego atrybutu wypisujemy listę wszystkich różnych dostępnych wartości oraz ilosc
+            Console.WriteLine("Lista roznych wartosci danego atrybutu oraz ilosc wystapien");
+            string[] wszystkieWartosciAtrybutu = new string[wczytaneDane.Length];
+            string[] wartosciAtrybutuDistinc = new string[1000];
+            int[] zlicz = new int[1000];
 
             for (int i = 0; i < wczytaneDane.Length; i++)// zczytuje dane i dodaje do listy
             {
-                rozneWartosciAtrybutu.Add(wczytaneDane[i][numerAtrybutu]);
+               wszystkieWartosciAtrybutu[i]=wczytaneDane[i][numerAtrybutu];
                 
             }
-            foreach (string x in rozneWartosciAtrybutu.Distinct())
+            int licznik = 0;
+            foreach (string x in wszystkieWartosciAtrybutu.Distinct())//wartosci bez duplikatow
             {
-                Console.WriteLine(x);
+                wartosciAtrybutuDistinc[licznik] = x;
+                licznik++;
             }
+            for (int i = 0; i < wczytaneDane.Length; i++)
+            {
+
+                for (int j = 0; j < wartosciAtrybutuDistinc.Length; j++)
+                {
+                    if (wartosciAtrybutuDistinc[j] == wczytaneDane[i][numerAtrybutu])
+                    {
+                        zlicz[j]++;
+                    }
+                }
+            }
+            for (int i = 0; i < wartosciAtrybutuDistinc.Length; i++)
+            {
+                if (zlicz[i] != 0)
+                {
+                    Console.WriteLine("Wartosc atrybutu " + wartosciAtrybutuDistinc[i] + " wystepuje: " + zlicz[i]);
+
+                }
+            }
+
+
             #endregion
             #region odchylenie standardowe dla poszczególnych atrybutów w całym systemie i w klasach decyzyjnych(dotyczy atrybutów numerycznych)
             double wariancja = 0;
