@@ -248,7 +248,7 @@ namespace DaneZPlikuConsole
                     if (wczytaneDane[i][j] != "?")
                     {
                         double.TryParse(wczytaneDane[i][j], out temp);
-                        srednia[j] += temp;
+                        srednia[i] += temp;
                     }
 
                 }
