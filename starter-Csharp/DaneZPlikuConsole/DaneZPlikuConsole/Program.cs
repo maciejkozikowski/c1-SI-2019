@@ -124,13 +124,15 @@ namespace DaneZPlikuConsole
                 Console.WriteLine("\nWielkosc klasy 0 jest rowna: "+falsz+" a klasy 1 jest rowna: "+prawda);
             #endregion
             #region minimalne i maksymalne wartości poszczególnych atrybutów(dotyczy atrybutów numerycznych) 
-            Console.WriteLine("Ktoremu atrybutowi wyznaczyc min i max? Podaj cyfre 0-7");
-            int numerAtrybutu = int.Parse(Console.ReadLine());
+            //Console.WriteLine("Ktoremu atrybutowi wyznaczyc min i max? Podaj cyfre 0-7");
+            //int numerAtrybutu = int.Parse(Console.ReadLine());
             List<string> wartosciAtrybutu = new List<string>();
-            double max = -999999;
-            double min = 999999;
+            double[] max = { -999999, -999999, -999999, -999999, -999999, -999999, -999999, -999999 };
+            double[] min = { 999999, 999999, 999999, 999999, 999999, 999999, 999999, 999999 };
             double sumaAtrybutow = 0;
             double sredniaArytmetyczna = 0;
+            for (int numerAtrybutu = 0; numerAtrybutu < 8; numerAtrybutu++)
+            {
             if (numerAtrybutu >= 0 && numerAtrybutu < 8)
             {
                 for (int i = 0; i < atrType.Length; i++)//wiersze
@@ -144,8 +146,8 @@ namespace DaneZPlikuConsole
                                 wartosciAtrybutu.Add(wczytaneDane[k][numerAtrybutu]);
                                     if (atrType[i][1] == "n") //czy jest numeryczny atrybut
                                     {
-                                        if (StringToDouble(wczytaneDane[k][numerAtrybutu]) < min) min = StringToDouble(wczytaneDane[k][numerAtrybutu]);
-                                        if (StringToDouble(wczytaneDane[k][numerAtrybutu]) > max) max = StringToDouble(wczytaneDane[k][numerAtrybutu]);
+                                        if (StringToDouble(wczytaneDane[k][numerAtrybutu]) < min[numerAtrybutu]) min[numerAtrybutu] = StringToDouble(wczytaneDane[k][numerAtrybutu]);
+                                        if (StringToDouble(wczytaneDane[k][numerAtrybutu]) > max[numerAtrybutu]) max[numerAtrybutu] = StringToDouble(wczytaneDane[k][numerAtrybutu]);
                                     sumaAtrybutow = sumaAtrybutow + StringToDouble(wczytaneDane[k][numerAtrybutu]);
                                     }
                             }
@@ -154,16 +156,27 @@ namespace DaneZPlikuConsole
                     }
                 }
             }
-            if (atrType[numerAtrybutu][1] == "n")
-            {
-                Console.WriteLine("Dla atrybutu :" + numerAtrybutu + " min=" + min + " max=" + max);
             }
+            for (int numerAtrybutu = 0; numerAtrybutu < 8; numerAtrybutu++)
+            {
+                if (atrType[numerAtrybutu][1] == "n")
+            {
+                Console.WriteLine("Dla atrybutu :" + numerAtrybutu + " min=" + min[numerAtrybutu] + " max=" + max[numerAtrybutu]);
+                    Console.ReadKey();
+            }
+            }
+                
             #endregion
             #region dla każdego atrybutu wypisujemy listę wszystkich różnych dostępnych wartości oraz ilosc
             Console.WriteLine("Lista roznych wartosci danego atrybutu oraz ilosc wystapien");
             string[] wszystkieWartosciAtrybutu = new string[wczytaneDane.Length];
             string[] wartosciAtrybutuDistinc = new string[1000];
             int[] zlicz = new int[1000];
+
+            for (int numerAtrybutu = 0; numerAtrybutu < 8; numerAtrybutu++)
+            {
+                Console.WriteLine("Dla atrybutu " + numerAtrybutu);
+                Console.ReadKey();
 
             for (int i = 0; i < wczytaneDane.Length; i++)// zczytuje dane i dodaje do listy
             {
@@ -195,22 +208,31 @@ namespace DaneZPlikuConsole
 
                 }
             }
+            }
+            
 
 
             #endregion
             #region odchylenie standardowe dla poszczególnych atrybutów w całym systemie i w klasach decyzyjnych(dotyczy atrybutów numerycznych)
-            double wariancja = 0;
-            double odchylenieStandardowe;
+            double[] wariancja = { 0, 0, 0, 0, 0, 0, 0, 0 };
+            double[] odchylenieStandardowe = { 0, 0, 0, 0, 0, 0, 0, 0 };
             for(int i = 0; i < wczytaneDane.Length; i++)
             {
-                if (atrType[numerAtrybutu][1] == "n")
+                for (int numerAtrybutu = 0; numerAtrybutu < 8; numerAtrybutu++)
                 {
-                    wariancja = wariancja + (StringToDouble(wczytaneDane[i][numerAtrybutu]) - sredniaArytmetyczna) * (StringToDouble(wczytaneDane[i][numerAtrybutu]) - sredniaArytmetyczna);
-                }
-            }
-            odchylenieStandardowe = Math.Sqrt(wariancja / wczytaneDane.Length);
-            Console.WriteLine("Odchylenie standardowe= " + odchylenieStandardowe);
+                    if (atrType[numerAtrybutu][1] == "n")
+                    {
+                        wariancja[numerAtrybutu] = wariancja[numerAtrybutu] + (StringToDouble(wczytaneDane[i][numerAtrybutu]) - sredniaArytmetyczna) * (StringToDouble(wczytaneDane[i][numerAtrybutu]) - sredniaArytmetyczna);
+                    }
 
+                }
+                
+            }
+            for (int numerAtrybutu = 0; numerAtrybutu < 8; numerAtrybutu++)
+            {
+                odchylenieStandardowe[numerAtrybutu] = Math.Sqrt(wariancja[numerAtrybutu] / wczytaneDane.Length);
+                Console.WriteLine("Odchylenie standardowe dla atrybutu " + numerAtrybutu + " = " + odchylenieStandardowe[numerAtrybutu]);
+            }
             #endregion
 
             #region Wygeneruj 10 procent wartości nieznanych, wpisując na miejsce danych znak zapytania i napraw metodą szukania najczęściej wystepującej wartości, lub wartością średnią(dla atrybutów numerycznych)
@@ -271,6 +293,12 @@ namespace DaneZPlikuConsole
             Console.Write(wynik);
             #endregion
 
+            #region Znornalizuj atrybuty numeryczne wybranego systemu na przedziały
+
+
+
+
+            #endregion
 
 
             /****************** Koniec miejsca na rozwiązanie ********************************/
